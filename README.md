@@ -1,6 +1,66 @@
-# Finance Dashboard Backend with Role-Based Access Control (RBAC)
+# Finance Dashboard - Full-Stack Application with RBAC
 
-A full-stack finance tracking application with a clean backend architecture, role-based access control, and powerful data aggregation capabilities using MongoDB.
+A full-stack finance tracking application featuring a clean **backend** with role-based access control (RBAC) and a modern **React frontend** with toast notifications, powered by MongoDB aggregation pipelines.
+
+## 🚀 Features
+
+- **Role-Based Access Control**: Viewer, Analyst, Admin with granular permissions
+- **Financial Tracking**: Income/expense recording with category management
+- **Dashboard Analytics**: Real-time aggregated insights, trends, and category breakdowns
+- **Secure Authentication**: JWT-based auth with bcrypt password hashing
+- **Toast Notifications**: User-friendly success/error feedback (frontend)
+- **Clean Architecture**: Layered backend with separation of concerns
+- **Responsive UI**: Built with React, Tailwind CSS, and Framer Motion
+
+---
+
+## 📁 Project Structure
+
+The project is organized into two independent applications:
+
+```
+e:/Project/
+├── backend/                 # Express.js REST API
+│   ├── src/
+│   │   ├── app.js          # Middleware & route configuration
+│   │   ├── server.js       # Server entry point (listen)
+│   │   ├── config/
+│   │   │   └── db.js       # MongoDB connection
+│   │   ├── controllers/    # HTTP request/response handlers
+│   │   ├── services/       # Business logic layer
+│   │   ├── models/         # Mongoose schemas (User, FinancialRecord)
+│   │   ├── routes/         # API endpoint definitions
+│   │   ├── policies/       # Authorization logic
+│   │   ├── middlewares/    # Auth, error handling
+│   │   └── utils/          # Helpers (hashing, formatting)
+│   ├── scripts/
+│   │   └── seed.js         # Database seeder
+│   ├── .env                # Backend environment variables
+│   ├── package.json
+│   └── node_modules/
+│
+├── frontend/                # React + Vite application
+│   ├── src/
+│   │   ├── main.jsx        # App entry point with Toaster
+│   │   ├── App.jsx         # Router configuration
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Login, Register, Dashboard, Records
+│   │   ├── context/        # AuthContext (state management)
+│   │   ├── services/       # API client with interceptors
+│   │   ├── hooks/          # Custom React hooks
+│   │   └── assets/         # Static assets
+│   ├── .env                # Frontend env (Vite proxy config)
+│   ├── vite.config.js      # Vite + proxy setup
+│   ├── tailwind.config.js  # Tailwind CSS
+│   ├── package.json
+│   └── node_modules/
+│
+├── postman/                 # Postman collection for API testing
+│   └── Finance Dashboard API.postman_collection.json
+│
+├── README.md
+└── SETUP.md
+```
 
 ## Problem Understanding
 
@@ -409,79 +469,318 @@ Deactivate a user.
    - Offline capability with service workers
    - Export dashboards as images
 
-## Setup Instructions
+## 🛠️ Setup Instructions
 
 ### Prerequisites
-- Node.js 18+
-- MongoDB 6+ (running locally or cloud)
+- **Node.js 18+** ([Download](https://nodejs.org/))
+- **MongoDB 6+** ([Download](https://www.mongodb.com/try/download/community)) or MongoDB Atlas cloud
+- Basic knowledge of terminal/command prompt
+
+---
 
 ### Backend Setup
 
 ```bash
-# Install dependencies
+# 1. Navigate to backend folder
+cd backend
+
+# 2. Install dependencies
 npm install
 
-# Configure environment variables (copy .env.example to .env)
-cp .env.example .env
-# Edit .env with your MongoDB URI and JWT secret
+# 3. Configure environment variables
+# The .env file is already present with default values:
+# - MONGODB_URI=mongodb://localhost:27017/finance_dashboard
+# - JWT_SECRET=your_jwt_secret_key_change_in_production_32_characters_min
+# - JWT_EXPIRE=7d
+# - PORT=5000
+# - NODE_ENV=development
 
-# Start MongoDB (if running locally)
-# On macOS/Linux: brew services start mongodb-community
-# On Windows: net start MongoDB
+# 4. Ensure MongoDB is running
+# On Windows: Start MongoDB service or run 'mongod' in a separate terminal
+# On macOS: brew services start mongodb-community
+# On Linux: sudo systemctl start mongod
 
-# Run in development
+# 5. Start backend in development mode (with hot reload)
 npm run dev
 
-# Run in production
+# Or for production:
 npm start
 ```
 
-The API will be available at `http://localhost:5000`. Health check: `GET /health`.
+✅ Backend runs on **http://localhost:5000**  
+✅ Health check: `GET http://localhost:5000/health`
+
+---
 
 ### Frontend Setup
 
 ```bash
+# 1. Navigate to frontend folder (in a new terminal)
 cd frontend
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start development server
+# 3. Start development server
 npm run dev
 
-# Build for production
-npm run build
+# Frontend will be available at:
+# - http://localhost:5173 (default)
+# - If port is in use, Vite will auto-select another (e.g., 5174)
 ```
 
-The frontend will be available at `http://localhost:5173`.
+✅ Frontend runs with Vite dev server with **HMR (Hot Module Replacement)**  
+✅ API requests are proxied to `http://localhost:5000` via Vite config  
+✅ Toast notifications appear in the top-right corner
 
-### Seeding Initial Data
+---
 
-You can create an initial admin user via API:
+### Database Seeding (Optional)
 
+To populate the database with sample users and records:
+
+```bash
+cd backend
+node scripts/seed.js
+```
+
+This creates:
+- **3 users**:
+  - `admin@finance.com` / `admin123` (Admin role)
+  - `analyst@finance.com` / `analyst123` (Analyst role)
+  - `viewer@finance.com` / `viewer123` (Viewer role)
+- **100 sample financial records** with realistic data
+
+---
+
+### Quick Test with cURL
+
+**Register:**
 ```bash
 curl -X POST http://localhost:5000/api/v1/auth/register \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "Admin User",
-    "email": "admin@example.com",
-    "password": "admin123"
-  }'
-
-# Then update role to admin via MongoDB shell or modify the endpoint
+  -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
 ```
 
-## Project Structure Summary
+**Login:**
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123"}'
+```
 
-This project demonstrates:
+**Dashboard (requires token):**
+```bash
+curl http://localhost:5000/api/v1/dashboard/summary \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
-✅ **Clean Backend Architecture** - Layered design with clear separation of concerns
-✅ **Role-Based Access Control** - Policies, middlewares, and role restrictions
-✅ **Well-Structured Business Logic** - All logic in services, not controllers
-✅ **Data Aggregation** - MongoDB aggregation pipelines for reports
-✅ **Maintainability** - Modular code with proper naming and documentation
-✅ **Security** - Hashed passwords, JWT, input validation, authorization checks
-✅ **Frontend UX** - React with Framer Motion animations, Tailwind styling, responsive design
-✅ **Documentation** - Comprehensive README with diagrams and explanations
+## 🎯 Key Features & Architecture
 
-This is a production-ready template that can be extended for real-world finance tracking applications while maintaining high code quality standards.
+### Backend Highlights
+- **Layered Architecture**: Controllers → Services → Models with clean separation
+- **RBAC Implementation**: Policy-based authorization in `policies/` folder
+- **MongoDB Aggregation**: Efficient dashboard queries using aggregation pipelines
+- **Validation**: `express-validator` for input sanitization
+- **Error Handling**: Centralized error middleware with consistent JSON responses
+
+### Frontend Highlights
+- **Toast Notifications**: `react-hot-toast` for real-time user feedback
+- **API Interceptors**: Automatic token injection and centralized error handling
+- **React Context**: `AuthContext` for global authentication state
+- **Protected Routes**: `PrivateRoute` component guards dashboard pages
+- **Responsive Design**: Tailwind CSS with mobile-friendly layouts
+- **Animations**: Framer Motion for smooth page transitions
+
+---
+
+## 📊 API Reference
+
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/register` | Register new user (default role: viewer) |
+| POST | `/api/v1/auth/login` | Login and receive JWT token |
+
+### User Management (Admin Only)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/users/me` | Get current user profile |
+| GET | `/api/v1/users` | List all users (with filters) |
+| PUT | `/api/v1/users/:id` | Update user details |
+| POST | `/api/v1/users/:id/activate` | Activate user |
+| POST | `/api/v1/users/:id/deactivate` | Deactivate user |
+
+### Financial Records
+
+| Method | Endpoint | Permissions |
+|--------|----------|-------------|
+| GET | `/api/v1/records` | List records with filters |
+| POST | `/api/v1/records` | Create record (Admin only) |
+| GET | `/api/v1/records/:id` | Get single record |
+| PUT | `/api/v1/records/:id` | Update record (Admin only) |
+| DELETE | `/api/v1/records/:id` | Soft delete (Admin only) |
+| GET | `/api/v1/records/categories` | Get unique categories |
+
+### Dashboard
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/dashboard/summary` | Financial totals, trends, recent transactions |
+| GET | `/api/v1/dashboard/category-summary` | Category-wise spending breakdown |
+
+---
+
+## 🔐 Access Control Matrix
+
+| Action | Viewer | Analyst | Admin |
+|--------|--------|--------|-------|
+| View own profile | ✅ | ✅ | ✅ |
+| View all users | ❌ | ❌ | ✅ |
+| Create financial records | ❌ | ❌ | ✅ |
+| View own records | ✅ | ✅ | ✅ |
+| View all records | ❌ | ✅ | ✅ |
+| Update/Delete records | ❌ | ❌ | ✅ |
+| Manage users (activate/deactivate) | ❌ | ❌ | ✅ |
+| View dashboard | ✅ | ✅ | ✅ |
+
+---
+
+## 🧪 Testing with Postman
+
+Import the Postman collection to test all endpoints:
+
+```
+postman/Finance Dashboard API.postman_collection.json
+```
+
+**Steps:**
+1. Open Postman → Import → Upload the collection file
+2. Set up environment variables:
+   - `jwt_token` (will be auto-populated by the collection's test script)
+3. Run the "Health Check" request to verify backend is running
+4. Run "Register" or "Login" to get a JWT token
+5. Subsequent requests will use `{{jwt_token}}` automatically
+
+---
+
+## 🏗️ Design Decisions & Trade-offs
+
+### Why MongoDB?
+- ✅ Flexible schema for future enhancements
+- ✅ Powerful aggregation pipeline perfect for dashboard analytics
+- ✅ JSON documents match JavaScript/TypeScript data structures
+- ⚠️ Trade-off: No SQL joins (relationships handled in app code)
+
+### Why JWT?
+- ✅ Stateless authentication (no session store needed)
+- ✅ Horizontal scaling friendly
+- ✅ Client can store token and send with each request
+- ⚠️ Trade-off: Token revocation requires blacklist/refresh strategy
+
+### Why Service Layer?
+- ✅ Business logic testable without HTTP layer
+- ✅ Reusable across different controllers/routes
+- ✅ Clear separation: Controllers = HTTP, Services = Logic
+- ⚠️ Trade-off: Extra abstraction for simple CRUD (but pays off as complexity grows)
+
+### Why Policy Layer for Authorization?
+- ✅ Centralized permission logic (single source of truth)
+- ✅ Easy to audit and modify permissions
+- ✅ Reusable across controllers and services
+- ⚠️ Trade-off: More files, but much more maintainable
+
+---
+
+## 📝 Development Notes
+
+### Backend
+- Uses **ES Modules** (`type: "module"` in package.json)
+- All imports/export use `.js` extensions (required in ESM)
+- Mongoose 8+ with Node.js driver 4+ (no `useNewUrlParser`/`useUnifiedTopology` options)
+- Password hashing via **bcryptjs** (10 salt rounds)
+- Pre-save middleware on User model auto-hashes passwords
+
+### Frontend
+- **Vite** for fast development and HMR
+- **React Router v6** for navigation
+- **Tailwind CSS** for styling
+- **Axios** with interceptors for API calls
+- **react-hot-toast** for notifications
+- **Framer Motion** for animations
+
+### Proxy Configuration
+Vite dev server proxies `/api/*` to `http://localhost:5000` (see `frontend/vite.config.js`). No CORS issues in development.
+
+---
+
+## 🔧 Common Issues & Solutions
+
+### Backend won't start (EADDRINUSE)
+Port 5000 is already in use. Kill the process:
+```bash
+# Windows
+netstat -ano | findstr :5000
+taskkill //F //PID <pid>
+
+# macOS/Linux
+lsof -i :5000
+kill -9 <pid>
+```
+
+### MongoDB connection fails
+- Ensure MongoDB service is running: `mongod`
+- Check connection string in `.env`
+- Verify database exists or will be created automatically
+
+### "Module not found" errors after moving files
+All backend imports use relative paths from `backend/src/`. If you moved files, update import paths accordingly.
+
+### Frontend can't reach backend (ECONNREFUSED)
+- Backend must be running on port 5000
+- Check Vite proxy config in `frontend/vite.config.js`
+- Open browser dev tools → Network tab to see the request URL
+
+### Toast notifications not showing
+- Verify `react-hot-toast` is installed: `cd frontend && npm install`
+- Check that `<Toaster />` is in `src/main.jsx`
+- Ensure import: `import { toast } from 'react-hot-toast'`
+
+---
+
+## 🚀 Future Enhancements
+
+- [ ] **Security**: Rate limiting, Helmet.js, refresh token rotation
+- [ ] **Testing**: Jest/React Testing Library, Supertest integration tests
+- [ ] **Charts**: Recharts or Chart.js for dashboard visualizations
+- [ ] **Export**: CSV/PDF export for financial reports
+- [ ] **Real-time**: WebSocket for live notifications
+- [ ] **Multi-currency**: Support for different currencies with conversion
+- [ ] **Budgeting**: Set monthly budgets with alerts
+- [ ] **Recurring transactions**: Automated income/expense entries
+- [ ] **API Docs**: OpenAPI/Swagger documentation
+- [ ] **Monitoring**: Prometheus metrics, Winston logging
+
+---
+
+## 📚 Resources
+
+- **Postman Collection**: `postman/Finance Dashboard API.postman_collection.json`
+- **MongoDB Docs**: https://docs.mongodb.com/
+- **Express.js**: https://expressjs.com/
+- **React Docs**: https://react.dev/
+- **Tailwind CSS**: https://tailwindcss.com/
+
+---
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+---
+
+## 🙋 Support
+
+For issues, questions, or contributions, please open an issue on the repository or consult the code comments for detailed implementation notes.
