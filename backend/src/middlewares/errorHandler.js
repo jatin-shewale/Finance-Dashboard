@@ -1,7 +1,3 @@
-/**
- * Global error handler middleware
- * Centralized error handling for consistent response format
- */
 export const errorHandler = (err, req, res, next) => {
   console.error('Error:', err);
 

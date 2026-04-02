@@ -1,14 +1,7 @@
 import * as financialRecordService from '../services/financialRecordService.js';
 import { body, validationResult } from 'express-validator';
 
-/**
- * Financial Record Controller - Handles HTTP requests/responses
- * Contains NO business logic - delegates to financialRecordService
- */
 
-/**
- * Validation rules for creating/updating records
- */
 export const validateRecord = [
   body('amount')
     .isFloat({ min: 0 })

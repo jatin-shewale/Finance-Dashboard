@@ -11,9 +11,7 @@ import { protect, restrictTo } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-/**
- * User routes (protected)
- */
+
 router.use(protect); // All routes require authentication
 
 // Get current user profile

@@ -2,13 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { hashPassword, comparePassword } from '../utils/helpers.js';
 
-/**
- * User Service - Contains all business logic related to users
- */
 
-/**
- * Register a new user
- */
 export const registerUser = async (userData) => {
   const { email, password, name, role = 'viewer' } = userData;
 

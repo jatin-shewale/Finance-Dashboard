@@ -1,9 +1,5 @@
 import FinancialRecord from '../models/FinancialRecord.js';
 
-/**
- * Check if user can access a specific financial record
- * Implements soft delete filter and ownership checks
- */
 export const canAccessRecord = async (userId, userRole, recordId) => {
   const record = await FinancialRecord.findOne({
     _id: recordId,

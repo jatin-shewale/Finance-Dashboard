@@ -4,9 +4,7 @@ import { protect } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-/**
- * Dashboard routes (protected)
- */
+
 router.use(protect); // All routes require authentication
 
 router.get('/summary', getSummary);

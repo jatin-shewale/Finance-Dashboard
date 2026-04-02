@@ -1,14 +1,7 @@
 import FinancialRecord from '../models/FinancialRecord.js';
 import { filterRecordsByPermission } from '../policies/financialRecordPolicy.js';
 
-/**
- * Dashboard Service - Handles aggregations and summary data
- * Uses MongoDB aggregation pipelines for efficient data processing
- */
 
-/**
- * Get dashboard summary with all aggregations
- */
 export const getDashboardSummary = async (userId, userRole, filters = {}) => {
   const { startDate, endDate } = filters;
 

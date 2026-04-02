@@ -1,13 +1,7 @@
 import FinancialRecord from '../models/FinancialRecord.js';
 import { filterRecordsByPermission } from '../policies/financialRecordPolicy.js';
 
-/**
- * Financial Record Service - Contains all business logic for records
- */
 
-/**
- * Create a new financial record
- */
 export const createRecord = async (recordData, userId) => {
   const { amount, type, category, date, description } = recordData;
 

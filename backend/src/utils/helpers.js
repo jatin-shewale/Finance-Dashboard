@@ -1,10 +1,3 @@
-/**
- * Helper utilities
- */
-
-/**
- * Hash a password using bcryptjs
- */
 export const hashPassword = async (password) => {
   const bcrypt = await import('bcryptjs');
   const salt = await bcrypt.genSalt(10);

@@ -1,7 +1,3 @@
-/**
- * Role-based access middleware
- * Checks if user has permission to perform action on resource
- */
 export const checkRolePermission = (action, resource) => {
   return (req, res, next) => {
     const userRole = req.user.role;

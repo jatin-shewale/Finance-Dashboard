@@ -1,12 +1,6 @@
 import * as dashboardService from '../services/dashboardService.js';
 
-/**
- * Dashboard Controller - Handles dashboard summary requests
- */
 
-/**
- * Get dashboard summary
- */
 export const getSummary = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;

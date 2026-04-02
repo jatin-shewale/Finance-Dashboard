@@ -12,9 +12,6 @@ import { protect } from '../middlewares/auth.js';
 
 const router = express.Router();
 
-/**
- * Financial Record routes (protected)
- */
 router.use(protect); // All routes require authentication
 
 // Public read access for authenticated users

@@ -1,8 +1,5 @@
 import User from '../models/User.js';
 
-/**
- * Check if user can access another user's data
- */
 export const canAccessUser = async (currentUserId, currentUserRole, targetUserId) => {
   // Admin can access any user
   if (currentUserRole === 'admin') {

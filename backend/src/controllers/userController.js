@@ -1,14 +1,7 @@
 import * as userService from '../services/userService.js';
 import { body, validationResult } from 'express-validator';
 
-/**
- * User Controller - Handles HTTP requests/responses for user operations
- * Contains NO business logic - delegates to userService
- */
 
-/**
- * Validation rules for user registration
- */
 export const validateRegister = [
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
